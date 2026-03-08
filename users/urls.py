@@ -1,0 +1,17 @@
+from django.urls import path 
+from .views  import *
+
+urlpatterns = [
+    path('' ,login , name='login'),
+    path('home/' ,home , name='home'),
+    path('department/' ,department , name='department'),
+    path('products/', products, name='product'),
+    path('logout/' ,logout , name='logout'),
+    path('ajax-form/', ajax_page, name='ajax_page'),
+    path('add-student/', add_student, name='add_student'),
+    path('add-student/<int:id>/', add_student, name='update_student'),
+    path('list-student/', list_student, name='list_student'),
+    path('list-bill/', list_bill, name='list_bill'),
+    path('add-bill/', add_bill, name='add_bill'),
+
+]

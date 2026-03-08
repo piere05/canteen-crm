@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'success' %}
+<div class="alert alert-success border-0 bg-success alert-dismissible fade show py-2">
+<div class="d-flex align-items-center">
+<div class="font-35 text-white"><i class="bx bxs-check-circle"></i>
+</div>
+<div class="ms-3">
+<h6 class="mb-0 text-white">Success Alerts</h6>
+<div class="text-white">{{message}}</div>
+</div>
+</div>
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div> 
+{% endif %}
+
+{% if message.tags == 'error' %}
+
+<div class="alert alert-danger border-0 bg-danger alert-dismissible fade show py-2">
+<div class="d-flex align-items-center">
+<div class="font-35 text-white"><i class="bx bxs-message-square-x"></i>
+</div>
+<div class="ms-3">
+<h6 class="mb-0 text-white">Alerts</h6>
+<div class="text-white">{{message}}</div>
+</div>
+</div>
+<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+
+<div class="d-flex">
+    <div class="align-self-center">
+        <h6 class="mb-0 mt-3 breadcrumb-item active">List Department</h6>
+    </div>
+    <div class="ms-auto">
+        <div class="col">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#exampleExtraLargeModal" onClick="getedit(0)">Add Department</button>
+            <!-- Modal -->
+        </div>
+    </div>
+</div>
+<hr />
+
+
+{% if department_data %}
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <!-- <th>Date</th> -->
+                        <th>SNo</th>
+                        <th>Department Name</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for departmentval in department_data %}
+
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{departmentval.dept_name}}</td>
+                        <td>
+                        {% if departmentval.status == 1 %}
+                        <span   class="btn btn-success padx-5 radius-30">Active</span>
+                        {% else %}
+                        <span  class="btn btn-danger padx-5 radius-30">Inactive</span>
+                        {% endif %}</td>
+                        <td>
+                            <div class="d-flex order-actions">
+                                <a href="#" class="btn btn-add btn-sm" tooltip="Edit" data-bs-toggle="modal"
+                                    data-bs-target="#exampleExtraLargeModal" onClick="getedit('{{ departmentval.id }}')"><i class="fa-light fa-pen"></i></a>
+
+                                <a href="#" class="ms-3 btn btn-add btn-sm" data-toggle="modal" tooltip="Delete"
+                                    data-target="#customer2"
+                                    onClick="if(confirm('Are you sure want to delete this?')) { window.location.href='?act=delete&id={{ departmentval.id }}' }"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>  
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<h3>No Record Found</h3>
+
+{% endif %}
+
+
+
+
+
+<div class="modal fade" id="exampleExtraLargeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-x">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card border-top border-0 border-4 border-primary">
+                    <div class="card-body p-5">
+
+                        <div id="output"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function getedit(val) {
+
+
+        $.ajax(
+            {
+                url: "{% url 'ajax_page' %}",
+                type: "POST",
+                data: {
+                    id: parseInt(val),
+                    act: "department",
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (data) {
+                    $("#output").html(data)
+                }
+            })
+
+    }
+
+
+</script>
+{% endblock content %}

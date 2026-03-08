@@ -1,0 +1,239 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--favicon-->
+    <title>Canteen CRM</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/metismenu/metisMenu.min.css' %}">
+    <link href="{% static 'plugins/datatable/css/dataTables.bootstrap5.min.css' %}" rel="stylesheet" />
+</head>
+
+<body>
+    <!--wrapper-->
+    <div class="wrapper">
+        <div class="sidebar-wrapper" data-simplebar="true">
+            <div class="sidebar-header">
+                <div style="width: 100%;text-align: center;">
+                    <a href="" class="logo-title"> Admin</a>
+                </div>
+
+                <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
+                </div>
+            </div>
+            <!--navigation-->
+            <ul class="metismenu" id="menu">
+                <li class="{% if request.path == '/home/' %}mm-active{% endif %}">
+                    <a href="/home/">
+                        <div class="parent-icon"><i class='bx bx-home-circle'></i>
+                        </div>
+                        <div class="menu-title">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="has-arrow" aria-expanded="false">
+                        <div class="parent-icon"><i class="bx bx-repeat"></i>
+                        </div>
+                        <div class="menu-title">Manage Master</div>
+                    </a>
+                    <ul>
+
+                        <li class="{% if request.path == '/department/' %}mm-active{% endif %}">
+                            <a href="/department/">
+                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                </div>
+                                <div class="menu-title">Manage Department</div>
+                            </a>
+                        </li>
+
+                        <li class="{% if request.path == '/products/' %}mm-active{% endif %}">
+                            <a href="/products/">
+                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                </div>
+                                <div class="menu-title">Manage Products</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
+                <li>
+                    <a href="javascript:;" class="has-arrow" aria-expanded="false">
+                        <div class="parent-icon"><i class="bx bx-repeat"></i>
+                        </div>
+                        <div class="menu-title">Manage Student</div>
+                    </a>
+                    <ul>
+
+                        <li class="{% if '/add-student/' in request.path %}mm-active{% endif %}">
+                            <a href="/add-student/">
+                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                </div>
+                                <div class="menu-title">Add Student</div>
+                            </a>
+                        </li>
+
+                        <li class="{% if request.path == '/list-student/' %}mm-active{% endif %}">
+                            <a href="/list-student/">
+                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                </div>
+                                <div class="menu-title">List Student</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                 <li>
+                    <a href="javascript:;" class="has-arrow" aria-expanded="false">
+                        <div class="parent-icon"><i class="bx bx-repeat"></i>
+                        </div>
+                        <div class="menu-title">Manage Bill</div>
+                    </a>
+                    <ul>
+
+                        <li class="{% if '/add-bill/' in request.path %}mm-active{% endif %}">
+                            <a href="/add-bill/">
+                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                </div>
+                                <div class="menu-title">Add Bill</div>
+                            </a>
+                        </li>
+
+                        <li class="{% if request.path == '/list-bill/' %}mm-active{% endif %}">
+                            <a href="/list-bill/">
+                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                </div>
+                                <div class="menu-title">List Bil</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
+                <li>
+                    <a href="">
+                        <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                        </div>
+                        <div class="menu-title">Change Password</div>
+                    </a>
+                </li>
+
+
+                <li>
+                    <a href="{% url 'logout' %}">
+                        <div class="parent-icon"><i class="fadeIn animated bx bx-log-out"></i>
+                        </div>
+                        <div class="menu-title">Logout</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+
+        <header>
+            <div class="topbar d-flex align-items-center">
+                <nav class="navbar navbar-expand">
+                    <div class="mobile-toggle-menu"><i class='bx bx-menu'></i>
+                    </div>
+
+
+
+                    <div class="top-menu ms-auto">
+                        <ul class="navbar-nav align-items-center">
+                            <li class="nav-item dropdown dropdown-large">
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <div class="header-notifications-list">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown dropdown-large">
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <div class="header-message-list">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="user-box dropdown">
+                        <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-info ps-3">
+
+                                <p class="user-name mb-0">Super Admin</p>
+
+
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+
+                            <li><a class="dropdown-item" href=""><i
+                                        class='bx bx-log-out-circle'></i><span>Logout</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <div class="page-wrapper">
+            <div class="page-content">
+                {% block content %}
+
+
+                {% endblock content %}
+            </div>
+        </div>
+        <div class="overlay toggle-icon"></div>
+        <!--end overlay-->
+        <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i
+                class='bx bxs-up-arrow-alt'></i></a>
+        <!--End Back To Top Button-->
+        <footer class="page-footer">
+            <p class="mb-0">Copyright © 2026. All right reserved.</p>
+        </footer>
+    </div>
+
+
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'plugins/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'plugins/datatable/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatable/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+            $('#menu').metisMenu();
+        });
+
+
+        $(document).ready(function () {
+            $('#example').DataTable({
+
+                lengthChange: true,
+                paging: true,
+
+                pageLength: 25,
+
+                pageLength: 10,
+
+            });
+
+
+        });
+    </script>
+
+    <script src="{% static 'js/app.js' %}"></script>
+
+
+
+</body>
+
+</html>
