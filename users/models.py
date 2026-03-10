@@ -43,9 +43,9 @@ class Students(models.Model):
 
 class Order_conf(models.Model):
     students = models.ForeignKey(Students,on_delete=models.CASCADE)
-    total_amt = models.DecimalField(max_digits=10, decimal_places=2)
-    gst_amt = models.DecimalField(max_digits=10, decimal_places=2)
-    net_amt = models.DecimalField(max_digits=10, decimal_places=2)
+    total_amt = models.DecimalField(max_digits=10, decimal_places=2, default=0) # type: ignore
+    gst_amt = models.DecimalField(max_digits=10, decimal_places=2, default=0) # type: ignore
+    net_amt = models.DecimalField(max_digits=10, decimal_places=2, default=0) # type: ignore
     status = models.IntegerField(default=1)
     created_datetime = models.DateTimeField(auto_now_add=True)
     modified_datetime = models.DateTimeField(auto_now=True)

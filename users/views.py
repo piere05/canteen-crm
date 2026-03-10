@@ -2,6 +2,7 @@ from genericpath import exists
 from itertools import product
 from tkinter.tix import STATUS
 
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from .models import *
@@ -177,8 +178,6 @@ def add_student(request,id=0):
                 Students.objects.filter(id=id).update(name=studnetname,mobile=studnetmobile,email=studnetemail,status=studnetstatus,department_id=studnetdept,address=studnetaddress)
                 messages.success(request,"Student Updated Successfully")
                 return redirect('list_student')
-
-
     if id!=0:
         student_data=Students.objects.filter(id=id).first()
     else:
@@ -203,8 +202,36 @@ def list_student(request):
 
 
 def add_bill(request):
+    if request.method=='POST':
+        student_id = request.POST.get('student_id')
+        order = Order_conf.objects.create(students_id=student_id)
+        order_id =order.id
+        qty_list = request.POST.getlist('qty[]')
+        price_list = request.POST.getlist('price[]')
+        product_list = request.POST.getlist('product_id[]')
+        total_list = request.POST.getlist('total_id[]')
+        gst_list = request.POST.getlist('gst[]')
+        total_price = 0
+        total_gst_amt = 0
+        total_net = 0
+        for i in range(len(product_list)):
+            product_id = product_list[i]
+            qty = int(qty_list[i])
+            gst = gst_list[i]
+            price = float(price_list[i])
+            net_amount = float(total_list[i])
+            gst_amt= (float(price)*float(gst))/100
+            total_price =total_price+price
+            total_gst_amt = total_gst_amt+gst_amt
+            total_net =total_net+net_amount
+            Order_products.objects.create(order_confirmation_id=order_id,products_id=product_id,price=price,qty=qty
+                                         ,gst_per=gst,gst_amt=gst_amt,net_amount=net_amount)
+        
+        Order_conf.objects.filter(id=order_id).update(total_amt=total_price,gst_amt=total_gst_amt,net_amt=total_net)
+        return redirect('list_bill')
     department_data = Department.objects.filter(status=1).all().order_by("-id")
-    context = {"department_data" : department_data}
+    product_data = Products.objects.filter(status=1).all().order_by("-id")
+    context = {"department_data" : department_data,"product_data" : product_data}
     return render(request,"add-bill.html",context)
 
 
@@ -217,6 +244,17 @@ def ajax_get_students(request):
     student_data = Students.objects.filter(department_id=dept_id,status=1).all().order_by("-id")
     context = {"student_data" : student_data}
     return render(request,"ajax-student-list.html",context)
+
+
+def get_product_price(request):
+    product_id = request.GET.get('product_id')
+    product = Products.objects.filter(id=product_id).first()
+    if product:
+        product_price= product.price
+    else:
+        product_price=0
+    return HttpResponse(product_price)
+
 
 def logout(request):
     request.session.flush()

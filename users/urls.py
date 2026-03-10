@@ -14,5 +14,6 @@ urlpatterns = [
     path('list-bill/', list_bill, name='list_bill'),
     path('add-bill/', add_bill, name='add_bill'),
      path('ajax-get-students/', ajax_get_students, name='ajax_get_students'),
+     path('get-product-price/', get_product_price, name='get_product_price'),
 
 ]

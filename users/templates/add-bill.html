@@ -44,13 +44,13 @@
 
 <div class="d-flex">
 
-    <div class="ms-auto">
-        <div class="col">
-            <!-- Button trigger modal --> 
-            <a type="button" class="btn btn-primary"  href="{% url 'list_bill' %}">List Bills</a>
-            <!-- Modal -->
-        </div>
-    </div>
+<div class="ms-auto">
+<div class="col">
+<!-- Button trigger modal --> 
+<a type="button" class="btn btn-primary"  href="{% url 'list_bill' %}">List Bills</a>
+<!-- Modal -->
+</div>
+</div>
 </div>
 <hr />
 <form action="#" method="POST"  enctype="multipart/form-data">
@@ -61,7 +61,7 @@
 <div class="col-md-4">
 <label class="form-label">Select Department</label>
 <select class="form-select"  name="dept_id" required onchange="getstudents(this.value,'department')"> 
-    <option value=""> Select Department</option>
+<option value=""> Select Department</option>
 {% if department_data %}
 {% for department_val in department_data %}
 <option value="{{ department_val.id }}" {% if student_data.department == department_val %} selected {% endif %}>{{ department_val.dept_name }}</option>
@@ -75,7 +75,7 @@
 <label class="form-label">Select Student</label>
 <select class="form-select"  name="student_id" required id="output">
 
-    <option value=""> Select Student</option>
+<option value=""> Select Student</option>
 {% if student_data %}
 
 {% for student_data in student_data %}
@@ -116,43 +116,51 @@
 
 <hr>
 
-<div class="row g-3 pt-0 mt-0 my-2" id="formscents">
+<div id="frm_scents">
+<div class="row g-3 pt-0 mt-0 my-2" id="p_scents">
 <div class="col-md-3">
-<select class="form-select"  name="product_id[]" id="product_id1" required onchange="getstudents(this.value,'department')"> 
-    <option value=""> Select Product</option>
-{% if department_data %}
-{% for department_val in department_data %}
-<option value="{{ department_val.id }}" {% if student_data.department == department_val %} selected {% endif %}>{{ department_val.dept_name }}</option>
+<select class="form-select"  name="product_id[]" id="product_id1" required onchange="getproduct(this.value,1)"> 
+<option value=""> Select Product</option>
+{% if product_data %}
+{% for product_val in product_data %}
+<option value="{{ product_val.id }}" {% if product_data.product.id == product_val.id %} selected {% endif %}>{{ product_val.productname }}</option>
 {% endfor %}
 {% endif %}
 </select>
 </div>
 <div class="col-md-1">
-<input type="text" id="qty1" name="qty[]" class="form-control"
+<input type="text" id="qty1" name="qty[]" onchange="getrate(this.value,1)" class="form-control"
 value=""  oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Qty" required>
 </div>
 <div class="col-md-2">
-<input type="text" id="price1" name="price[]" class="form-control"
+<input type="text" id="price1" name="price[]" onchange="getrate(this.value,1)"  class="form-control"
 value=""  oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Rate" required>
 </div>
 <div class="col-md-2">
-<select class="form-select"  name="gst[]" id="gst1" required> 
-    <option value=""> Select GST</option>
-    <option value="0">0%</option>
-    <option value="5">5%</option>
-    <option value="12">12%</option>
-    <option value="18" selected>18%</option>
+<select class="form-select"  name="gst[]" onchange="getrate(this.value,1)"  id="gst1" required> 
+<option value=""> Select GST</option>
+<option value="0">0%</option>
+<option value="5">5%</option>
+<option value="12">12%</option>
+<option value="18" selected>18%</option>
 </select>
 </div>
 <div class="col-md-2 text-center">
 <label class="form-label"><b> <span id="total1"> Rs. 0 </span></b></label>
+<input type="hidden" name="total[]" id="totalval1">
 </div>
 <div class="col-md-2">
-<label class="form-label"> <a href="javascript:void(0);" > <img src="{% static 'images/plus.png' %}" width="30px"> </a> </label>
+<label class="form-label"> <a href="javascript:void(0);" id="addScnt"> <img src="{% static 'images/plus.png' %}" width="30px"> </a> </label>
+</div>
 </div>
 </div>
 
 
+
+<div class="col-6 mt-4 mb-3">
+<input type="submit" name="Submit" class="btn btn-primary px-5"
+value="{% if student_data %} Update {% else %}  Add {% endif %}">
+</div>
 </div>
 
 
@@ -167,29 +175,121 @@ value=""  oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Ra
 
 
 
+<script src="{% static 'js/jquery.js' %}"></script>
+
+<script>
+var scntDiv = $("#frm_scents");
+var i = $("[id=p_scents]").length + 1;
+
+$(function() {
+$("#addScnt").click(function() {
+$(`<div class="row g-3 pt-0 mt-0 my-2" id="p_scents">
+<div class="col-md-3">
+<select class="form-select"  name="product_id[]" id="product_id${i}" required onchange="getproduct(this.value,${i})"> 
+<option value=""> Select Product</option>
+{% if product_data %}
+{% for product_val in product_data %}
+<option value="{{ product_val.id }}" {% if product_data.product.id == product_val.id %} selected {% endif %}>{{ product_val.productname }}</option>
+{% endfor %}
+{% endif %}
+</select>
+</div>
+<div class="col-md-1">
+<input type="text" id="qty${i}" name="qty[]" onchange="getrate(this.value,${i})" class="form-control"
+value=""  oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Qty" required>
+</div>
+<div class="col-md-2">
+<input type="text" id="price${i}" name="price[]" onchange="getrate(this.value,${i})"  class="form-control"
+value=""  oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Rate" required>
+</div>
+<div class="col-md-2">
+<select class="form-select"  name="gst[]" onchange="getrate(this.value,${i})"  id="gst${i}" required> 
+<option value=""> Select GST</option>
+<option value="0">0%</option>
+<option value="5">5%</option>
+<option value="12">12%</option>
+<option value="18" selected>18%</option>
+</select>
+</div>
+<div class="col-md-2 text-center">
+<label class="form-label"><b> <span id="total${i}"> Rs. 0 </span></b></label>
+<input type="hidden" name="total[]" id="totalval${i}">
+</div>
+<div class="col-md-2">
+<label class="form-label"> <a href="javascript:void(0);" onclick="removeCont(this);"> <img src="{% static 'images/minus.png' %}" width="30px"> </a> </label>
+</div>
+</div>`).appendTo(scntDiv);
+i++;
+return false;
+});
+});
+function removeCont(_this) {
+if (i > 1) {
+$(_this).parent().parent().parent().remove();
+}}
+</script>  
 
 
 <script>
 
 
-    function getstudents(val,type){
-        $.ajax({
-    url: "{% url 'ajax_get_students' %}",
-    type: "POST",
-    data: {
-        'dept_id': val ? val : 0,
-        'type':type,
-        'csrfmiddlewaretoken': '{{ csrf_token }}'
-    },
-    success: function(data) {
-        $('#output').html(data);
-    }
+function getstudents(val,type){
+$.ajax({
+url: "{% url 'ajax_get_students' %}",
+type: "POST",
+data: {
+'dept_id': val ? val : 0,
+'type':type,
+'csrfmiddlewaretoken': '{{ csrf_token }}'
+},
+success: function(data) {
+$('#output').html(data);
+}
 });
-    }
+}
 
+
+
+
+
+
+function getproduct(product_id,row){
+if( product_id =='' ){
+$("#price"+row).val("");
+$("#total"+row).text("Rs. 0");
+$("#totalval"+row).val("0");
+}else{
+$.ajax({
+url: "/get-product-price/",
+type: "GET",
+data: {product_id: product_id},
+success: function(data){
+$("#price"+row).val(data);
+getrate(data,row);
+}
+});
+}
+}
+function getrate(val,row_id){
+total=0;
+qty=$("#qty"+row_id).val();
+price=$("#price"+row_id).val();
+gst=$("#gst"+row_id).val();
+total=(parseFloat(qty)*parseFloat(price)) + ((parseFloat(qty)*parseFloat(price))*parseFloat(gst)/100);
+if(isNaN(total)){
+total=0;
+}else{
+total=total;
+}
+$("#total"+row_id).text("Rs. "+total.toFixed(2));
+$("#totalval"+row_id).val(total);
+}
 
 
 </script>
+
+
+
 
 
 
