@@ -13,5 +13,6 @@ urlpatterns = [
     path('list-student/', list_student, name='list_student'),
     path('list-bill/', list_bill, name='list_bill'),
     path('add-bill/', add_bill, name='add_bill'),
+     path('ajax-get-students/', ajax_get_students, name='ajax_get_students'),
 
 ]

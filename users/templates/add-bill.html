@@ -3,6 +3,8 @@
 
 {% block content %}
 
+{% load static %}
+
 
 {% if messages %}
 {% for message in messages %}
@@ -51,70 +53,143 @@
     </div>
 </div>
 <hr />
+<form action="#" method="POST"  enctype="multipart/form-data">
 
-
-<div class="card p-5">
-
-<form action="#" method="POST" class="row g-3" enctype="multipart/form-data">
 {% csrf_token %}
-
-
-
-
+<div class="card p-5">
+<div class="row g-3">
 <div class="col-md-4">
-<label class="form-label">Select Student</label>
-<select class="form-control"  name="dept_id" required> 
-    <option value=""> Select Student</option>
+<label class="form-label">Select Department</label>
+<select class="form-select"  name="dept_id" required onchange="getstudents(this.value,'department')"> 
+    <option value=""> Select Department</option>
 {% if department_data %}
-
 {% for department_val in department_data %}
 <option value="{{ department_val.id }}" {% if student_data.department == department_val %} selected {% endif %}>{{ department_val.dept_name }}</option>
 {% endfor %}
 {% endif %}
 </select>
+</div>
+
+
+<div class="col-md-4">
+<label class="form-label">Select Student</label>
+<select class="form-select"  name="student_id" required id="output">
+
+    <option value=""> Select Student</option>
+{% if student_data %}
+
+{% for student_data in student_data %}
+<option value="{{ student_data.id }}" {% if student_data.department == student_data %} selected {% endif %}>{{ student_data.name }}</option>
+{% endfor %}
+{% endif %}
+</select>
+</div>
+</div>
+</div>
+
+
+<div class="bg-primary my-4 rounded py-0"><h4 class="text-white text-center">Bill Details</h4></div>
+
+
+<div class="card p-5">
+
+<div class="row g-3">
+<div class="col-md-3">
+<label class="form-label"><b> Select Product </b></label>
+</div>
+<div class="col-md-1">
+<label class="form-label"><b> Qty </b></label>
+</div>
+<div class="col-md-2">
+<label class="form-label"><b> Rate </b></label>
+</div>
+<div class="col-md-2">
+<label class="form-label"><b> GST </b></label>
+</div>
+<div class="col-md-2 text-center">
+<label class="form-label"><b> Total </b></label>
+</div>
+<div class="col-md-2">
+<label class="form-label"><b> Action </b></label>
+</div>
+</div>
+
+<hr>
+
+<div class="row g-3 pt-0 mt-0 my-2" id="formscents">
+<div class="col-md-3">
+<select class="form-select"  name="product_id[]" id="product_id1" required onchange="getstudents(this.value,'department')"> 
+    <option value=""> Select Product</option>
+{% if department_data %}
+{% for department_val in department_data %}
+<option value="{{ department_val.id }}" {% if student_data.department == department_val %} selected {% endif %}>{{ department_val.dept_name }}</option>
+{% endfor %}
+{% endif %}
+</select>
+</div>
+<div class="col-md-1">
+<input type="text" id="qty1" name="qty[]" class="form-control"
+value=""  oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Qty" required>
+</div>
+<div class="col-md-2">
+<input type="text" id="price1" name="price[]" class="form-control"
+value=""  oninput="this.value=this.value.replace(/[^0-9]/g,'');" placeholder="Rate" required>
+</div>
+<div class="col-md-2">
+<select class="form-select"  name="gst[]" id="gst1" required> 
+    <option value=""> Select GST</option>
+    <option value="0">0%</option>
+    <option value="5">5%</option>
+    <option value="12">12%</option>
+    <option value="18" selected>18%</option>
+</select>
+</div>
+<div class="col-md-2 text-center">
+<label class="form-label"><b> <span id="total1"> Rs. 0 </span></b></label>
+</div>
+<div class="col-md-2">
+<label class="form-label"> <a href="javascript:void(0);" > <img src="{% static 'images/plus.png' %}" width="30px"> </a> </label>
+</div>
+</div>
+
 
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-<div class="col-md-12">
-<label class="form-label width-100">Status</label>
-
-<div class="form-check form-check-inline">
-
-<input class="form-check-input" type="radio" {% if not student_data or student_data.status == 1  %} checked {% endif %} name="status" value="1" checked>
-<label class="form-check-label">Active</label>
-</div>
-
-<div class="form-check form-check-inline">
-<input class="form-check-input" type="radio" {% if student_data.status == 0  %} checked {% endif %} name="status" value="0">
-<label class="form-check-label">Inactive</label>
-</div>
-
-</div>
-
-<div class="col-6">
-<input type="submit" name="Submit" class="btn btn-primary px-5"
-value="{% if student_data %} Update {% else %}  Add {% endif %}">
-</div>
 
 </form>
 
-</div>
 
 
 
 
 
+
+
+
+
+
+<script>
+
+
+    function getstudents(val,type){
+        $.ajax({
+    url: "{% url 'ajax_get_students' %}",
+    type: "POST",
+    data: {
+        'dept_id': val ? val : 0,
+        'type':type,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+    },
+    success: function(data) {
+        $('#output').html(data);
+    }
+});
+    }
+
+
+
+</script>
 
 
 

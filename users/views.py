@@ -203,14 +203,20 @@ def list_student(request):
 
 
 def add_bill(request):
-    return render(request,"add-bill.html")
+    department_data = Department.objects.filter(status=1).all().order_by("-id")
+    context = {"department_data" : department_data}
+    return render(request,"add-bill.html",context)
 
 
 def list_bill(request):
     return render(request,"list-bill.html")
 
 
-
+def ajax_get_students(request):
+    dept_id = request.POST.get("dept_id")
+    student_data = Students.objects.filter(department_id=dept_id,status=1).all().order_by("-id")
+    context = {"student_data" : student_data}
+    return render(request,"ajax-student-list.html",context)
 
 def logout(request):
     request.session.flush()
