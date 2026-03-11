@@ -201,7 +201,13 @@ def list_student(request):
 
 
 
-def add_bill(request):
+def add_bill(request,id=0):
+    if int(id)!=0:
+        order_data = Order_conf.objects.filter(id=id).first()
+        order_product_data = Order_products.objects.filter(order_confirmation_id=id).first()
+    else:
+        order_data =''
+        order_product_data=''
     if request.method=='POST':
         student_id = request.POST.get('student_id')
         order = Order_conf.objects.create(students_id=student_id)
@@ -209,34 +215,44 @@ def add_bill(request):
         qty_list = request.POST.getlist('qty[]')
         price_list = request.POST.getlist('price[]')
         product_list = request.POST.getlist('product_id[]')
-        total_list = request.POST.getlist('total_id[]')
+        total_list = request.POST.getlist('total[]')
         gst_list = request.POST.getlist('gst[]')
         total_price = 0
         total_gst_amt = 0
         total_net = 0
-        for i in range(len(product_list)):
-            product_id = product_list[i]
-            qty = int(qty_list[i])
-            gst = gst_list[i]
-            price = float(price_list[i])
-            net_amount = float(total_list[i])
-            gst_amt= (float(price)*float(gst))/100
-            total_price =total_price+price
+        product_count =0
+        for product_id, qty, price, total, gst in zip(product_list, qty_list, price_list, total_list, gst_list):
+            qty = int(qty)
+            price = float(price)
+            gst = float(gst)
+            product_count =product_count+1
+            item_price = price * qty
+            net_amount = float(total)
+            gst_amt = (item_price * gst) / 100
+            total_price =total_price+item_price
             total_gst_amt = total_gst_amt+gst_amt
             total_net =total_net+net_amount
             Order_products.objects.create(order_confirmation_id=order_id,products_id=product_id,price=price,qty=qty
                                          ,gst_per=gst,gst_amt=gst_amt,net_amount=net_amount)
-        
-        Order_conf.objects.filter(id=order_id).update(total_amt=total_price,gst_amt=total_gst_amt,net_amt=total_net)
+        Order_conf.objects.filter(id=order_id).update(total_amt=total_price,gst_amt=total_gst_amt,net_amt=total_net,product_count=product_count)
+        messages.success(request,"Bill Created Successfully")
         return redirect('list_bill')
     department_data = Department.objects.filter(status=1).all().order_by("-id")
     product_data = Products.objects.filter(status=1).all().order_by("-id")
-    context = {"department_data" : department_data,"product_data" : product_data}
+    context = {"department_data" : department_data,"product_data" : product_data,"order_data" : order_data,"order_product_data" :order_product_data}
     return render(request,"add-bill.html",context)
 
 
 def list_bill(request):
-    return render(request,"list-bill.html")
+    bill_id = request.GET.get("id")
+    act = request.GET.get("act")
+    if act == "delete" and bill_id:
+        Order_products.objects.filter(order_confirmation_id=bill_id).delete()
+        Order_conf.objects.filter(id=bill_id).delete()
+        messages.success(request,"Bill Deleted Successfully")
+    billdata = Order_conf.objects.all().order_by("-id")
+    context = {"billdata" : billdata}
+    return render(request,"list-bill.html", context)
 
 
 def ajax_get_students(request):

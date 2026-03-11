@@ -42,12 +42,12 @@
 
 <div class="d-flex">
     <div class="align-self-center">
-        <h6 class="mb-0 mt-3 breadcrumb-item active">List Student</h6>
+        <h6 class="mb-0 mt-3 breadcrumb-item active">List Bill</h6>
     </div>
     <div class="ms-auto">
         <div class="col">
             <!-- Button trigger modal -->
-            <a type="button" class="btn btn-primary" href="{% url 'add_student' %}">Add Student</a>
+            <a type="button" class="btn btn-primary" href="{% url 'add_bill' %}">Add Bill</a>
             <!-- Modal -->
         </div>
     </div>
@@ -55,7 +55,7 @@
 <hr />
 
 
-{% if student_data %}
+{% if billdata %}
 
 <div class="card">
     <div class="card-body">
@@ -65,11 +65,12 @@
                     <tr>
                         <!-- <th>Date</th> -->
                         <th>SNo</th>
-                        <th>Student Name</th>
-                        <th>Department Name</th>
-                         <th>Mobile</th>
-                          <th>Email</th>
-                          <th>Address</th>
+                        <th>Bill Date</th>
+                        <th>Student Details</th>
+                         <th>Total Products</th>
+                          <th>Amount</th>
+                          <th>GST</th>
+                          <th>Total Amount</th>
 
                         <th>Status</th>
                         <th>Action</th>
@@ -77,28 +78,32 @@
                 </thead>
                 <tbody>
 
-                    {% for studentval in student_data %}
+                    {% for billvalue in billdata %}
 
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{studentval.name}}</td>
-                         <td>{{studentval.department.dept_name}}</td>
-                          <td>{{studentval.mobile}}</td>
-                           <td>{{studentval.email}}</td>
-                            <td>{{studentval.address}}</td>
+                           <td>{{billvalue.created_datetime|date:"d-m-Y"}}</td>
+                        <td>{{billvalue.students.name}}<br>
+                             ( {{billvalue.students.department.dept_name}} )
+                        </td>
+                      
+                          <td>{{billvalue.product_count}} <i class="fa-thin fa-circle-info"></i></td>
+                           <td>Rs.{{billvalue.total_amt}}</td>
+                            <td>Rs.{{billvalue.gst_amt}}</td>
+                            <td>Rs.{{billvalue.net_amt}}</td>
                         <td>
-                        {% if studentval.status == 1 %}
+                        {% if billvalue.status == 1 %}
                         <span   class="btn btn-success padx-5 radius-30">Active</span>
                         {% else %}
                         <span  class="btn btn-danger padx-5 radius-30">Inactive</span>
                         {% endif %}</td>
                         <td>
                             <div class="d-flex order-actions">
-                                <a href="{% url 'update_student' studentval.id %}" class="btn btn-add btn-sm" tooltip="Edit"><i class="fa-light fa-pen"></i></a>
+                                <a href="{% url 'update_bill' billvalue.id %}" class="btn btn-add btn-sm" tooltip="Edit"><i class="fa-light fa-pen"></i></a>
 
                                 <a href="#" class="ms-3 btn btn-add btn-sm" data-toggle="modal" tooltip="Delete"
                                     data-target="#customer2"
-                                    onClick="if(confirm('Are you sure want to delete this?')) { window.location.href='?act=delete&id={{ studentval.id }}' }"><i class="fa-solid fa-trash"></i></a>
+                                    onClick="if(confirm('Are you sure want to delete this?')) { window.location.href='?act=delete&id={{ billvalue.id }}' }"><i class="fa-solid fa-trash"></i></a>
                             </div>
                         </td>
                     </tr>  
