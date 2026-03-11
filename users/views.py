@@ -6,6 +6,10 @@ from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from .models import *
+from weasyprint import HTML
+from django.template.loader import render_to_string
+
+
 
 import os
 from django.conf import settings
@@ -62,6 +66,14 @@ def ajax_page(request):
         else:
             context = {"act" : "product"}
         return render(request ,'ajax-modal.html',context)
+    
+    if act=='order_product' and request.method== "POST":
+        if int(id_val)!=0:
+            order_product_data = Order_products.objects.filter(order_confirmation_id=id_val).all()
+            context = {"act" : "order_product" , "order_product_data" :order_product_data }
+        else:
+            context = {"act" : "order_product"}
+        return render(request ,'ajax-modal.html',context)
 
 
     return render(request ,'ajax-modal.html')
@@ -69,7 +81,6 @@ def ajax_page(request):
      
 
 def department(request):
-         
          if "user_id" not in request.session:
             return redirect('login')
          if request.method=="POST":
@@ -178,13 +189,8 @@ def add_student(request,id=0):
                 Students.objects.filter(id=id).update(name=studnetname,mobile=studnetmobile,email=studnetemail,status=studnetstatus,department_id=studnetdept,address=studnetaddress)
                 messages.success(request,"Student Updated Successfully")
                 return redirect('list_student')
-    if id!=0:
-        student_data=Students.objects.filter(id=id).first()
-    else:
-        student_data=None
-
     department_data = Department.objects.filter(status=1).all().order_by("-id")
-    context = {"department_data" : department_data,"student_data" : student_data}
+    context = {"department_data" : department_data}
     return render(request,"add-students.html" , context)
 
 
@@ -204,14 +210,21 @@ def list_student(request):
 def add_bill(request,id=0):
     if int(id)!=0:
         order_data = Order_conf.objects.filter(id=id).first()
-        order_product_data = Order_products.objects.filter(order_confirmation_id=id).first()
+        order_product_data = Order_products.objects.filter(order_confirmation_id=id)
     else:
         order_data =''
         order_product_data=''
     if request.method=='POST':
         student_id = request.POST.get('student_id')
-        order = Order_conf.objects.create(students_id=student_id)
-        order_id =order.id
+        if int(id)!=0:
+            order = Order_conf.objects.filter(id=id).update(students_id=student_id)
+            order_id =id
+            Order_products.objects.filter(order_confirmation_id=id).delete()
+            messages.success(request,"Bill Updated Successfully")
+        else:
+            order = Order_conf.objects.create(students_id=student_id)
+            messages.success(request,"Bill Created Successfully")
+            order_id =order.id # type: ignore
         qty_list = request.POST.getlist('qty[]')
         price_list = request.POST.getlist('price[]')
         product_list = request.POST.getlist('product_id[]')
@@ -235,7 +248,7 @@ def add_bill(request,id=0):
             Order_products.objects.create(order_confirmation_id=order_id,products_id=product_id,price=price,qty=qty
                                          ,gst_per=gst,gst_amt=gst_amt,net_amount=net_amount)
         Order_conf.objects.filter(id=order_id).update(total_amt=total_price,gst_amt=total_gst_amt,net_amt=total_net,product_count=product_count)
-        messages.success(request,"Bill Created Successfully")
+        
         return redirect('list_bill')
     department_data = Department.objects.filter(status=1).all().order_by("-id")
     product_data = Products.objects.filter(status=1).all().order_by("-id")
@@ -247,7 +260,6 @@ def list_bill(request):
     bill_id = request.GET.get("id")
     act = request.GET.get("act")
     if act == "delete" and bill_id:
-        Order_products.objects.filter(order_confirmation_id=bill_id).delete()
         Order_conf.objects.filter(id=bill_id).delete()
         messages.success(request,"Bill Deleted Successfully")
     billdata = Order_conf.objects.all().order_by("-id")
@@ -257,8 +269,14 @@ def list_bill(request):
 
 def ajax_get_students(request):
     dept_id = request.POST.get("dept_id")
+    order_id = request.POST.get("order_id")
     student_data = Students.objects.filter(department_id=dept_id,status=1).all().order_by("-id")
-    context = {"student_data" : student_data}
+    if order_id!='':
+        student_selected = Order_conf.objects.filter(id=order_id).first()
+        student_id=student_selected.students.id # type: ignore
+    else:
+        student_id=''
+    context = {"student_data" : student_data,"student_id" : student_id}
     return render(request,"ajax-student-list.html",context)
 
 
@@ -271,6 +289,26 @@ def get_product_price(request):
         product_price=0
     return HttpResponse(product_price)
 
+
+
+def export_bill(request, id=0):
+    
+    order = Order_conf.objects.get(id=id)
+    items = Order_items.objects.filter(order_id=id)
+
+    html = render_to_string("quotation_pdf.html", {
+        "order": order,
+        "items": items
+    })
+
+    response = HttpResponse(content_type="application/pdf")
+
+    # THIS LINE IS IMPORTANT
+    response['Content-Disposition'] = 'inline; filename="quotation.pdf"'
+
+    HTML(string=html).write_pdf(response)
+
+    return response
 
 def logout(request):
     request.session.flush()

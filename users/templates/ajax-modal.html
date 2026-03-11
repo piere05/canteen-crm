@@ -129,3 +129,39 @@ value="{% if product_data %}Update{% else %}Add{% endif %}">
 </form>
 
 {% endif %}
+
+
+
+{% if act == "order_product" %}
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">S.No</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Qty</th>
+      <th scope="col">Rate</th>
+      <th scope="col">GST %</th>
+      <th scope="col">GST Amount</th>
+      <th scope="col">Total Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for order_pro in order_product_data %}
+    <tr>
+      <td>{{forloop.counter}}</td>
+      <td>{{order_pro.products.productname}}</td>
+      <td>{{order_pro.qty}}</td>
+      <td>Rs. {{order_pro.price}}</td>
+      <td>{{order_pro.gst_per}} %</td>
+      <td>Rs. {{order_pro.gst_amt}}</td>
+      <td>Rs. {{ order_pro.net_amount }}</td>
+
+    </tr>
+
+    {% endfor %}
+   
+
+  </tbody>
+</table>
+{% endif %}

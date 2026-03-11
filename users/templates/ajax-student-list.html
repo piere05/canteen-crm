@@ -2,7 +2,7 @@
  <option value=""> Select Student</option>
 {% if student_data %}
 {% for student_val in student_data %}
-<option value="{{ student_val.id }}">{{ student_val.name }}</option>
+<option value="{{ student_val.id }}" {% if student_id == student_val.id %}selected{% endif %}>{{ student_val.name }}</option>
 {% endfor %}
 {% else %}
  <option value="">No Students Found</option>
