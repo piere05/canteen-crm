@@ -21,24 +21,24 @@
         <div class="sidebar-wrapper" data-simplebar="true">
             <div class="sidebar-header">
                 <div style="width: 100%;text-align: center;">
-                    <a href="" class="logo-title"> Admin</a>
+                    <a href="" class="logo-title"> <img  src="{% static 'images/logo.jpg' %}" width="120px"> </a>
                 </div>
 
-                <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
+                <div class="toggle-icon ms-auto"><i class="fa-light fa-arrow-left"></i>
                 </div>
             </div>
             <!--navigation-->
             <ul class="metismenu" id="menu">
                 <li class="{% if request.path == '/home/' %}mm-active{% endif %}">
                     <a href="/home/">
-                        <div class="parent-icon"><i class='bx bx-home-circle'></i>
+                        <div class="parent-icon"><i class="fa-regular fa-house"></i></i>
                         </div>
                         <div class="menu-title">Dashboard</div>
                     </a>
                 </li>
                 <li>
                     <a href="javascript:;" class="has-arrow" aria-expanded="false">
-                        <div class="parent-icon"><i class="bx bx-repeat"></i>
+                        <div class="parent-icon"><i class="fa-regular fa-book-blank"></i>
                         </div>
                         <div class="menu-title">Manage Master</div>
                     </a>
@@ -46,7 +46,7 @@
 
                         <li class="{% if request.path == '/department/' %}mm-active{% endif %}">
                             <a href="/department/">
-                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
                                 </div>
                                 <div class="menu-title">Manage Department</div>
                             </a>
@@ -54,7 +54,7 @@
 
                         <li class="{% if request.path == '/products/' %}mm-active{% endif %}">
                             <a href="/products/">
-                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
                                 </div>
                                 <div class="menu-title">Manage Products</div>
                             </a>
@@ -66,7 +66,7 @@
 
                 <li>
                     <a href="javascript:;" class="has-arrow" aria-expanded="false">
-                        <div class="parent-icon"><i class="bx bx-repeat"></i>
+                        <div class="parent-icon"><i class="fa-light fa-users"></i>
                         </div>
                         <div class="menu-title">Manage Student</div>
                     </a>
@@ -74,7 +74,7 @@
 
                         <li class="{% if '/add-student/' in request.path %}mm-active{% endif %}">
                             <a href="/add-student/">
-                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
                                 </div>
                                 <div class="menu-title">Add Student</div>
                             </a>
@@ -82,7 +82,7 @@
 
                         <li class="{% if request.path == '/list-student/' %}mm-active{% endif %}">
                             <a href="/list-student/">
-                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
                                 </div>
                                 <div class="menu-title">List Student</div>
                             </a>
@@ -93,7 +93,7 @@
 
                  <li>
                     <a href="javascript:;" class="has-arrow" aria-expanded="false">
-                        <div class="parent-icon"><i class="bx bx-repeat"></i>
+                        <div class="parent-icon"><i class="fa-regular fa-receipt"></i>
                         </div>
                         <div class="menu-title">Manage Bill</div>
                     </a>
@@ -101,7 +101,7 @@
 
                         <li class="{% if '/add-bill/' in request.path %}mm-active{% endif %}">
                             <a href="/add-bill/">
-                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
                                 </div>
                                 <div class="menu-title">Add Bill</div>
                             </a>
@@ -109,7 +109,7 @@
 
                         <li class="{% if request.path == '/list-bill/' %}mm-active{% endif %}">
                             <a href="/list-bill/">
-                                <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
                                 </div>
                                 <div class="menu-title">List Bil</div>
                             </a>
@@ -120,8 +120,44 @@
 
 
                 <li>
-                    <a href="">
-                        <div class="parent-icon"><i class="lni lni-keyword-research"></i>
+                    <a href="javascript:;" class="has-arrow" aria-expanded="false">
+                        <div class="parent-icon"><i class="fa-duotone fa-regular fa-arrow-trend-up"></i>
+                        </div>
+                        <div class="menu-title">Manage Reports</div>
+                    </a>
+                    <ul>
+
+                        <li class="{% if '/department-sales/' in request.path %}mm-active{% endif %}">
+                            <a href="/department-sales/">
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
+                                </div>
+                                <div class="menu-title">Department Wise Sales</div>
+                            </a>
+                        </li>
+
+                        <li class="{% if request.path == '/students-sales/' %}mm-active{% endif %}">
+                            <a href="/students-sales/">
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
+                                </div>
+                                <div class="menu-title">Students Wise Sales</div>
+                            </a>
+                        </li>
+
+                         <li class="{% if request.path == '/product-sales/' %}mm-active{% endif %}">
+                            <a href="/product-sales/">
+                                <div class="parent-icon"><i class="fa-light fa-arrow-right"></i>
+                                </div>
+                                <div class="menu-title">Product Wise Sales</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
+                <li class="{% if request.path == '/change-password/' %}mm-active{% endif %}">
+                    <a href="{% url 'change_password' %}">
+                        <div class="parent-icon"><i class="fa-regular fa-lock"></i>
                         </div>
                         <div class="menu-title">Change Password</div>
                     </a>
@@ -130,7 +166,7 @@
 
                 <li>
                     <a href="{% url 'logout' %}">
-                        <div class="parent-icon"><i class="fadeIn animated bx bx-log-out"></i>
+                        <div class="parent-icon"><i class="fa-regular fa-power-off"></i>
                         </div>
                         <div class="menu-title">Logout</div>
                     </a>
@@ -176,7 +212,7 @@
                         <ul class="dropdown-menu dropdown-menu-end">
 
 
-                            <li><a class="dropdown-item" href=""><i
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i
                                         class='bx bx-log-out-circle'></i><span>Logout</span></a>
                             </li>
                         </ul>

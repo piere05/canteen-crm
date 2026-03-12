@@ -16,6 +16,10 @@ urlpatterns = [
      path('ajax-get-students/', ajax_get_students, name='ajax_get_students'),
      path('get-product-price/', get_product_price, name='get_product_price'),
     path('add-bill/<int:id>/', add_bill, name='update_bill'),
-    path('export-bill/<int:id>/', export_bill, name='export_bill'),
+    path('change-password/', change_password, name='change_password'),
+    path('department-sales/', dept_sales, name='dept_sales'),
+    path('students-sales/', student_sales, name='student_sales'),
+    path('product-sales/', product_sales, name='product_sales'),
+    path('export-department-sales/<str:type>/', export_dept_sales, name='export_dept_sales'), # type: ignore
 
 ]

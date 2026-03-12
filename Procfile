@@ -1,1 +1,0 @@
-web: gunicorn canteen_crm.wsgi

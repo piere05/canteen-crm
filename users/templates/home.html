@@ -8,11 +8,11 @@
 
     <div class="col">
         <div class="card radius-10 bg-success Order">
-            <div class="card-body"><a href="#">
+            <div class="card-body"><a href="{% url 'list_student'  %}">
                     <div class="d-flex align-items-center">
                         <div>
                             <h6 class="mb-0 text-white">Total Students</h6>
-                            <h4 class="my-1 text-white">-- </h4>
+                            <h4 class="my-1 text-white">{{ total_students }}</h4>
 
                         </div>
 
@@ -22,6 +22,58 @@
         </div>
     </div>
 
+
+     <div class="col">
+        <div class="card radius-10  Packed">
+            <div class="card-body"><a href="{% url 'department'  %}">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6 class="mb-0 text-white">Total Departments</h6>
+                            <h4 class="my-1 text-white">{{ total_department }}</h4>
+
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    
+     <div class="col">
+        <div class="card radius-10  Shipped">
+            <div class="card-body"><a href="{% url 'product'  %}">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6 class="mb-0 text-white">Total Products</h6>
+                            <h4 class="my-1 text-white">{{ total_products }}</h4>
+
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+     
+     <div class="col">
+        <div class="card radius-10  Delivered">
+            <div class="card-body"><a href="{% url 'list_bill'  %}">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h6 class="mb-0 text-white">Total Bills</h6>
+                            <h4 class="my-1 text-white">{{ total_orders }} | Rs. {{ total_amt.net_amt__sum }}</h4>
+
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 
 </div>
 

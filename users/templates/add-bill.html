@@ -231,7 +231,7 @@ value="{% if order_data %} Update {% else %}  Add {% endif %}">
 
 
 window.onload = function(){
-    getstudents({{order_data.students.department.id}},'department',{{order_data.id}});
+    getstudents('{{order_data.students.department.id}}','department','{{order_data.id}}');
 }
 var scntDiv = $("#frm_scents");
 var i = $("[id=p_scents]").length + 1;

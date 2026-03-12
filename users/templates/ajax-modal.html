@@ -139,8 +139,9 @@ value="{% if product_data %}Update{% else %}Add{% endif %}">
       <th scope="col">S.No</th>
       <th scope="col">Product Name</th>
       <th scope="col">Qty</th>
-      <th scope="col">Rate</th>
-      <th scope="col">GST %</th>
+      <th scope="col">Product Amount</th>
+         <th scope="col">Total Rate</th>
+      <th scope="col">GST%</th>
       <th scope="col">GST Amount</th>
       <th scope="col">Total Amount</th>
     </tr>
@@ -153,14 +154,22 @@ value="{% if product_data %}Update{% else %}Add{% endif %}">
       <td>{{order_pro.products.productname}}</td>
       <td>{{order_pro.qty}}</td>
       <td>Rs. {{order_pro.price}}</td>
-      <td>{{order_pro.gst_per}} %</td>
-      <td>Rs. {{order_pro.gst_amt}}</td>
-      <td>Rs. {{ order_pro.net_amount }}</td>
+       <td>Rs. {{order_pro.product_amt}}</td>
+      <td>{{order_pro.gst_per}}%</td>
+      <td>Rs. {{order_pro.gst_amts}}</td>
+      <td>Rs. {{ order_pro.nett_tot }}</td>
+
 
     </tr>
 
     {% endfor %}
-   
+   <tr>
+  <td colspan="3" style="text-align:right;"><b>Total  Product Amount</b></td>
+  <td><b>Rs. {{ totals.total_productamt }}</b></td>
+    <td colspan="3" style="text-align:right;"><b>Total  Order Amount</b></td>
+  <td><b>Rs. {{ totals.grand_total }}</b></td>
+</tr>
+
 
   </tbody>
 </table>

@@ -1,12 +1,13 @@
 from genericpath import exists
 from itertools import product
 from tkinter.tix import STATUS
-
+from urllib import response
+from django.db.models import F, DecimalField, Sum , Count
+from django.db.models.functions import Coalesce, Round
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from .models import *
-from weasyprint import HTML
 from django.template.loader import render_to_string
 
 
@@ -43,8 +44,16 @@ def login(request):
 def home(request):
          if "user_id" not in request.session:
             return redirect('login')
-
-         return render(request ,'home.html')
+         total_students = Students.objects.count()
+         total_department = Department.objects.count()
+         total_products = Products.objects.count()
+         total_orders = Order_conf.objects.count()
+         total_amt = Order_conf.objects.aggregate(Sum('net_amt'))
+         
+         context = {"total_students" : total_students, "total_department" : total_department, 
+                    "total_products" : total_products
+                    ,"total_orders" : total_orders,"total_amt" : total_amt}
+         return render(request ,'home.html', context)
 
 
 def ajax_page(request):
@@ -69,8 +78,13 @@ def ajax_page(request):
     
     if act=='order_product' and request.method== "POST":
         if int(id_val)!=0:
-            order_product_data = Order_products.objects.filter(order_confirmation_id=id_val).all()
-            context = {"act" : "order_product" , "order_product_data" :order_product_data }
+            order_product_data = Order_products.objects.filter(order_confirmation_id=id_val).annotate(
+                product_amt  = F('price')*F('qty'),
+                gst_amts  = Round((F('price')*F('qty')) * F('gst_per')/100,2),
+                nett_tot = Round((F('price')*F('qty')) + (F('price')*F('qty')) * F('gst_per')/100,2),
+            )
+            totals = order_product_data.aggregate(total_productamt=Sum('product_amt'), grand_total=Sum('nett_tot'))
+            context = {"act" : "order_product" , "order_product_data" :order_product_data ,  "totals": totals }
         else:
             context = {"act" : "order_product"}
         return render(request ,'ajax-modal.html',context)
@@ -291,24 +305,91 @@ def get_product_price(request):
 
 
 
-def export_bill(request, id=0):
-    
-    order = Order_conf.objects.get(id=id)
-    items = Order_items.objects.filter(order_id=id)
+def change_password(request):
+    user_id = request.session['user_id']
+    if request.method=='POST':
+        select_old = Users.objects.get(id=user_id)
+        old_pass = request.POST.get("old_password")
+        new_pass = request.POST.get("new_password")
+        confirm_pass = request.POST.get("confirm_password")
+        if select_old.password ==old_pass: # type: ignore
+            if new_pass == confirm_pass:
+                select_old.password = new_pass
+                select_old.save()
+                messages.success(request,"Password Successfully Changed")
+                return redirect('change_password')
+            else:             
+                messages.error(request,"New and Confirm Password Didn't Match ")
+                return redirect('change_password')
+        else:
+            messages.error(request,'Old Password is Incorrect')
+            return redirect('change_password')
+    return render(request,'change-password.html')
 
-    html = render_to_string("quotation_pdf.html", {
-        "order": order,
-        "items": items
-    })
+def dept_sales(request):
+    department_data = Department.objects.annotate(
+        total_students =Count('students'),
+        total_order = Count('students__order_conf__students', distinct=True),
+        dept_sales = Coalesce(Sum('students__order_conf__net_amt'),0, output_field=DecimalField())
+    )       
+    context = {"department_data" : department_data}
+    return render(request,'department-sales.html',context)
 
-    response = HttpResponse(content_type="application/pdf")
 
-    # THIS LINE IS IMPORTANT
-    response['Content-Disposition'] = 'inline; filename="quotation.pdf"'
 
-    HTML(string=html).write_pdf(response)
+def student_sales(request):
+    department_data = Students.objects.annotate(
+        total_order = Count('order_conf', distinct=True),
+        dept_sales = Coalesce(Sum('order_conf__net_amt'),0, output_field=DecimalField())
+    )       
+    context = {"department_data" : department_data}
+    return render(request,'students-sales.html',context)
 
-    return response
+
+def product_sales(request):
+    product_data = Products.objects.annotate(
+        total_qty = Coalesce(Sum('order_products__qty'),0),
+        total_amt = Coalesce(Sum('order_products__net_amount'),0, output_field=DecimalField())
+    )
+    context = {"department_data" : product_data}
+    return render(request, 'product-sales.html', context)
+
+def export_dept_sales(request,type):
+        if type=='department':
+            department_data = Department.objects.annotate(
+            total_students =Count('students'),
+            total_order = Count('students__order_conf__students', distinct=True),
+            dept_sales = Coalesce(Sum('students__order_conf__net_amt'),0, output_field=DecimalField()))  
+            context = {"department_data" : department_data ,"type" :type} 
+            html = render_to_string(
+                'export-department-sales.html',
+                context)
+            response = HttpResponse(html, content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="department_sales.xls"'
+            return response
+        elif type=='students':
+            department_data = Students.objects.annotate(
+            total_order = Count('order_conf', distinct=True),
+            dept_sales = Coalesce(Sum('order_conf__net_amt'),0, output_field=DecimalField())
+            ) 
+            context = {"department_data" : department_data ,"type" :type} 
+            html = render_to_string(
+                'export-department-sales.html',
+                context)
+            response = HttpResponse(html, content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="student_sales.xls"'
+            return response
+        elif type=='product':
+            product_data = Products.objects.annotate(
+            total_qty = Coalesce(Sum('order_products__qty'),0),
+            total_amt = Coalesce(Sum('order_products__net_amount'),0, output_field=DecimalField()))
+            context = {"department_data" : product_data ,"type" :type} 
+            html = render_to_string(
+                'export-department-sales.html',
+                context)
+            response = HttpResponse(html, content_type='application/ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="product_sales.xls"'
+            return response
 
 def logout(request):
     request.session.flush()
