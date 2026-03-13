@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'canteen_crm.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:1234@localhost:5432/db_canteen_crm'
+        default='postgresql://canteen_user:cWskVpQK6e4SXyIHMXsnAT3mUFZXHV9p@dpg-d6puv9kr85hc73ckkogg-a:5432/canteen_db_lhq1'
     )
 }
 
@@ -118,7 +118,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 MEDIA_URL = '/media/' 
