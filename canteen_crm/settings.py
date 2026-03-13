@@ -12,7 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from tracemalloc import StatisticDiff
-import os 
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-3ei=e6*flk=@&3izrw=#@=7(xfet1!dh!pd0=$9!9vl70lp^c^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -76,14 +77,9 @@ WSGI_APPLICATION = 'canteen_crm.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_canteen_crm',
-        'USER' : 'postgres',
-        'PASSWORD' : '1234',
-        'HOST': 'localhost',
-        'PORT' : '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://postgres:1234@localhost:5432/db_canteen_crm'
+    )
 }
 
 
