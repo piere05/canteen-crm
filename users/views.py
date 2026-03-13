@@ -1,6 +1,5 @@
 from genericpath import exists
 from itertools import product
-from tkinter.tix import STATUS
 from urllib import response
 from django.db.models import F, DecimalField, Sum , Count
 from django.db.models.functions import Coalesce, Round
