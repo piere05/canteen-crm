@@ -1,2 +1,3 @@
 venv
 canteen_crm\__pycache__\
+canteen_crm\settings.py
