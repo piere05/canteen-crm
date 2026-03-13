@@ -78,14 +78,9 @@ WSGI_APPLICATION = 'canteen_crm.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_canteen_crm',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://canteen_user:cWskVpQK6e4SXyIHMXsnAT3mUFZXHV9p@dpg-d6puv9kr85hc73ckkogg-a:5432/canteen_db_lhq1'
+    )
 }
 
 
