@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'canteen_crm.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:1234@localhost:5432/db_canteen_crm'
+        default='postgresql://canteen_user:cWskVpQK6e4SXyIHMXsnAT3mUFZXHV9p@dpg-d6puv9kr85hc73ckkogg-a/canteen_db_lhq1'
     )
 }
 
