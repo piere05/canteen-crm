@@ -13,6 +13,7 @@ urlpatterns = [
     path('list-student/', list_student, name='list_student'),
     path('list-bill/', list_bill, name='list_bill'),
     path('add-bill/', add_bill, name='add_bill'),
+     path('export-bill/', export_pdf, name='export_pdf'),
      path('ajax-get-students/', ajax_get_students, name='ajax_get_students'),
      path('get-product-price/', get_product_price, name='get_product_price'),
     path('add-bill/<int:id>/', add_bill, name='update_bill'),

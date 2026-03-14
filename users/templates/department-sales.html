@@ -56,20 +56,21 @@
 <hr />
 
 
-{% if department_data %}
+<form method="POST">
+{% csrf_token %}
 <div class="card p-5">
 <div class="row g-3">
 <div class="col-md-3">
 <label class="form-label">From Date</label>
-<input type="date" id="fromdate" name="fromdate"  class="form-control"
-value=""  placeholder="fromdate" required>
+<input type="date" id="fromdate" name="from_date"  class="form-control"
+value="{{ from_date }}"  placeholder="fromdate" required>
 </div>
 
 
 <div class="col-md-3">
 <label class="form-label">To Date</label>
-<input type="date" id="todate" name="todate"  class="form-control"
-value=""  placeholder="todate" required>
+<input type="date" id="todate" name="to_date"  class="form-control"
+value="{{ to_date }}"  placeholder="todate" required>
 </div>
 
 
@@ -80,6 +81,9 @@ value="Filter">
 </div>
 </div>
 </div>
+</form>
+
+{% if department_data %}
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">

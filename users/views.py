@@ -1,15 +1,18 @@
 from genericpath import exists
 from itertools import product
-from urllib import response
+from urllib import request, response
 from django.db.models import F, DecimalField, Sum , Count
 from django.db.models.functions import Coalesce, Round
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 from .models import *
 from django.template.loader import render_to_string
 
-
+import datetime 
+from datetime import date
 
 import os
 from django.conf import settings
@@ -325,15 +328,43 @@ def change_password(request):
             return redirect('change_password')
     return render(request,'change-password.html')
 
-def dept_sales(request):
-    department_data = Department.objects.annotate(
+def dept_query(request):
+        department_data = Department.objects.all()
+
+        from_date = request.POST.get("from_date")
+        to_date = request.POST.get("to_date")
+        today = date.today() 
+        if not from_date and not to_date:
+            from_date = today.replace(day=1).strftime("%Y-%m-%d")
+            to_date = today.strftime("%Y-%m-%d")
+        if from_date and to_date:
+            department_data = department_data.filter(students__order_conf__created_datetime__date__range=[from_date, to_date])
+        department_data = department_data.annotate(
         total_students =Count('students'),
         total_order = Count('students__order_conf__students', distinct=True),
-        dept_sales = Coalesce(Sum('students__order_conf__net_amt'),0, output_field=DecimalField())
-    )       
-    context = {"department_data" : department_data}
+        dept_sales = Coalesce(Sum('students__order_conf__net_amt'),0, output_field=DecimalField()))
+        return department_data, from_date, to_date
+def dept_sales(request):
+    department_data, from_date, to_date = dept_query(request)
+    context = {"department_data" : department_data , "from_date" : from_date , "to_date" : to_date}
     return render(request,'department-sales.html',context)
 
+
+def export_pdf(request):
+
+    department_data = Department.objects.all()
+
+    template = get_template("export-bill.html")
+    html = template.render({
+        "department_data": department_data
+    })
+
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = 'inline; filename="department_report.pdf"'
+
+    pisa.CreatePDF(html, dest=response)
+
+    return response
 
 
 def student_sales(request):
@@ -355,11 +386,8 @@ def product_sales(request):
 
 def export_dept_sales(request,type):
         if type=='department':
-            department_data = Department.objects.annotate(
-            total_students =Count('students'),
-            total_order = Count('students__order_conf__students', distinct=True),
-            dept_sales = Coalesce(Sum('students__order_conf__net_amt'),0, output_field=DecimalField()))  
-            context = {"department_data" : department_data ,"type" :type} 
+            department_data, from_date, to_date = dept_query(request)
+            context = {"department_data" : department_data , "from_date" : from_date , "to_date" : to_date ,"type" :type}  
             html = render_to_string(
                 'export-department-sales.html',
                 context)

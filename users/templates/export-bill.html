@@ -1,78 +1,53 @@
-<!DOCTYPE html>
 <html>
 <head>
 <style>
+
 body{
 font-family: Arial;
-font-size: 12px;
 }
 
 table{
-width:100%;
 border-collapse: collapse;
+width:100%;
 }
 
-table, th, td{
+th,td{
 border:1px solid black;
 padding:6px;
-}
-
-.header{
 text-align:center;
-font-size:20px;
-font-weight:bold;
 }
 
-.total{
-font-weight:bold;
+th{
+background:#eeeeee;
 }
+
 </style>
 </head>
 
 <body>
 
-<div class="header">
-Company Name
-</div>
-
-<p>
-Bill No : {{bill.id}} <br>
-Date : {{bill.created_datetime}}
-</p>
+<h2>Department Sales Report</h2>
 
 <table>
+
 <tr>
-<th>#</th>
-<th>Product</th>
-<th>Qty</th>
-<th>Price</th>
-<th>Total</th>
+<th>SNo</th>
+<th>Department</th>
+<th>Total Students</th>
+<th>Total Sales</th>
 </tr>
 
-{% for item in items %}
+{% for d in department_data %}
+
 <tr>
 <td>{{forloop.counter}}</td>
-<td>{{item.product.productname}}</td>
-<td>{{item.qty}}</td>
-<td>{{item.price}}</td>
-<td>{{item.total}}</td>
+<td>{{d.dept_name}}</td>
+<td>{{d.total_students}}</td>
+<td>{{d.dept_sales}}</td>
 </tr>
+
 {% endfor %}
 
-</table>
-
-<br>
-
-<table>
-<tr>
-<td>GST</td>
-<td>{{bill.gst_amt}}</td>
-</tr>
-
-<tr class="total">
-<td>Grand Total</td>
-<td>{{bill.net_amt}}</td>
-</tr>
 </table>
 
 </body>
